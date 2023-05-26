@@ -1,5 +1,13 @@
+import CreatePoll from '../components/createPoll'
+import Polls from '../components/polls'
+
 function App() {
-    return <h1 className='font-bold'>hello</h1>
+    return (
+        <main>
+            <Polls />
+            <CreatePoll />
+        </main>
+    )
 }
 
 export default App
