@@ -16,6 +16,12 @@
         "noEmit": true,
         "jsx": "react-jsx"
     },
-    "include": ["src", "components/createPoll.tsx", "components/poll.tsx", "components/polls.tsx", "lib/firebase.ts"],
+    "include": [
+        "src",
+        "src/components/createPoll.tsx",
+        "src/components/poll.tsx",
+        "src/components/polls.tsx",
+        "src/lib/firebase.ts"
+    ],
     "references": [{ "path": "./tsconfig.node.json" }]
 }
