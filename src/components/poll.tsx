@@ -28,17 +28,30 @@ export default function Poll({ poll }: { poll: TypePoll }) {
     const totalVotes = votes.reduce((pv, cv) => pv + cv, 0) || 1
 
     return (
-        <li className='px-8 py-6 bg-white drop-shadow-lg rounded-lg'>
-            <h2 className='font-bold text-xl text-center capitalize'>{poll.name}</h2>
-            <p className='text-lg capitalize'>{poll.desc}</p>
+        <li className='flex flex-col gap-2 rounded-xl bg-white px-8 py-6 drop-shadow-lg'>
+            <div>
+                <h2 className='text-center text-xl font-bold capitalize'>{poll.name}</h2>
+                <p className='text-lg capitalize'>{poll.desc}</p>
+            </div>
             <div className='flex gap-2'>
-                {poll.options.map((option, index) => (
-                    <button key={index} className='w-1/2 p-2 border rounded-lg' onClick={() => onClickVote(index)}>
-                        <div>{option}</div>
-                        <div>{((votes[index] / totalVotes) * 100).toFixed(2)}</div>
-                        <div>{votes[index]} votes</div>
-                    </button>
-                ))}
+                {poll.options.map((option, index) => {
+                    const percent = (votes[index] / totalVotes) * 100
+                    return (
+                        <button
+                            key={index}
+                            className='relative flex aspect-square w-1/2 flex-col items-center gap-2 overflow-hidden rounded-lg border px-2 py-3'
+                            onClick={() => onClickVote(index)}
+                        >
+                            <div
+                                className='absolute bottom-0 left-0 right-0 -z-10 bg-red-300 bg-opacity-60 blur-[2px] duration-300'
+                                style={{ top: `${100 - percent}%` }}
+                            />
+                            <div className='capitalize'>{option}</div>
+                            <div>{percent.toFixed(2)}%</div>
+                            <div>{votes[index]} votes</div>
+                        </button>
+                    )
+                })}
             </div>
         </li>
     )

@@ -3,7 +3,7 @@ import Polls from './components/polls'
 
 function App() {
     return (
-        <main className='p-4 bg-slate-200 min-h-screen min-w-screen'>
+        <main className='min-w-screen min-h-screen bg-slate-200 p-6'>
             <Polls />
             <CreatePoll />
         </main>
