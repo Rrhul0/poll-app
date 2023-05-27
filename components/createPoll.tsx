@@ -1,4 +1,4 @@
-import { addDoc } from 'firebase/firestore'
+import { addDoc, serverTimestamp, documentId } from 'firebase/firestore'
 import { FormEvent } from 'react'
 import { pollsDB } from '../lib/firebase'
 
@@ -10,6 +10,7 @@ export default function CreatePoll() {
             name: formData.get('poll_name'),
             desc: formData.get('poll_desc'),
             options: [formData.get('option1'), formData.get('option2')],
+            timestamp: serverTimestamp(),
         }
         addDoc(pollsDB, data)
     }
