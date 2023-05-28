@@ -1,11 +1,16 @@
 {
-    "public": "dist",
-    "rewrites": [
-        {
-            "source": "**",
-            "destination": "/index.html"
+    "hosting": {
+        "public": "dist",
+        "rewrites": [
+            {
+                "source": "**",
+                "destination": "/index.html"
+            }
+        ],
+        "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+        "predeploy": ["npm run build"],
+        "frameworksBackend": {
+            "region": "us-east1"
         }
-    ],
-    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
-    "predeploy": ["npm run build"]
+    }
 }
