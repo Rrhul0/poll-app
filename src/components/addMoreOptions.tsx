@@ -9,9 +9,11 @@ export default function AddMoreOptions({ poll }: { poll: TypePoll }) {
     function onSubmitOptions(e: FormEvent<HTMLFormElement>) {
         e.preventDefault()
 
-        const newOption = new FormData(e.currentTarget).get('option')
+        let newOption = new FormData(e.currentTarget).get('option')
         const docu = doc(db, 'polls', poll.id)
-        updateDoc(docu, { options: [...poll.options, newOption] })
+        updateDoc(docu, { options: [...poll.options, newOption] }).then(() => {
+            setOpen(false)
+        })
     }
 
     return (
