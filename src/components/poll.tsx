@@ -18,11 +18,8 @@ export default function Poll({ poll }: { poll: TypePoll }) {
     }, [])
 
     function onClickVote(optionIndex: number) {
-        const newVotes = [...votes]
-        if (optionIndex > newVotes.length - 1) return
-        newVotes[optionIndex] += 1
-
-        set(refDB, newVotes)
+        const newRef = ref(realtimeVotesDB, 'poll-' + poll.id + '/' + optionIndex)
+        set(newRef, votes[optionIndex] + 1)
     }
 
     const totalVotes = votes.reduce((pv, cv) => pv + cv, 0) || 1
