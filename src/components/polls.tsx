@@ -27,7 +27,7 @@ export default function Polls() {
     }, [])
 
     return (
-        <ul className='grid grid-cols-1 gap-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3'>
+        <ul className='flex flex-wrap gap-6'>
             {polls.map(poll => (
                 <Poll key={poll.id} poll={poll} />
             ))}

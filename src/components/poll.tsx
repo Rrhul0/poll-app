@@ -28,18 +28,18 @@ export default function Poll({ poll }: { poll: TypePoll }) {
     const totalVotes = votes.reduce((pv, cv) => pv + cv, 0) || 1
 
     return (
-        <li className='flex flex-col gap-2 rounded-xl bg-white px-8 py-6 drop-shadow-lg'>
+        <li className='flex flex-grow flex-col items-center gap-2 rounded-xl bg-white px-4 py-6 drop-shadow-lg '>
             <div>
                 <h2 className='text-center text-xl font-bold capitalize'>{poll.name}</h2>
                 <p className='text-lg capitalize'>{poll.desc}</p>
             </div>
-            <div className='flex gap-2'>
+            <div className='flex flex-wrap justify-center gap-2'>
                 {poll.options.map((option, index) => {
                     const percent = (votes[index] / totalVotes) * 100
                     return (
                         <button
                             key={index}
-                            className='relative flex aspect-square w-1/2 flex-col items-center gap-2 overflow-hidden rounded-lg border px-2 py-3'
+                            className='relative flex aspect-square w-40 flex-col items-center gap-2 overflow-hidden rounded-lg border px-2 py-3'
                             onClick={() => onClickVote(index)}
                         >
                             <div
