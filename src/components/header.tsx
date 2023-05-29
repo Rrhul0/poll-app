@@ -45,23 +45,23 @@ export default function Header() {
                                 {user?.email?.charAt(0).toUpperCase()}
                             </div>
                         )}
-                        <div
-                            className={`absolute right-2 top-16 z-50 flex  flex-col gap-2 rounded-xl bg-slate-700 bg-opacity-50 px-3 py-2 backdrop-blur-sm ${
-                                showMenu ? ' ' : 'hidden'
-                            }`}
-                        >
-                            <strong>{user.displayName || user.email?.split('@')[0]}</strong>
-                            <small>{user.email}</small>
-                            <button
-                                onClick={e => {
-                                    signOut(auth).then()
-                                }}
-                                className='rounded-lg bg-purple-100 text-xl text-slate-400 transition-all duration-200 hover:bg-purple-200'
-                            >
-                                Log Out
-                            </button>
-                        </div>
                     </button>
+                )}
+                {showMenu && user ? (
+                    <div className='absolute right-2 top-16 z-50 flex  flex-col gap-2 rounded-xl bg-slate-700 bg-opacity-50 px-3 py-2 backdrop-blur-sm'>
+                        <strong>{user.displayName || user.email?.split('@')[0]}</strong>
+                        <small>{user.email}</small>
+                        <button
+                            onClick={_ => {
+                                signOut(auth).then()
+                            }}
+                            className='rounded-lg bg-purple-100 text-xl text-slate-400 transition-all duration-200 hover:bg-purple-200'
+                        >
+                            Log Out
+                        </button>
+                    </div>
+                ) : (
+                    ''
                 )}
             </div>
         </header>
