@@ -1,6 +1,7 @@
 import { GoogleAuthProvider, onAuthStateChanged, signInWithPopup, signOut } from 'firebase/auth'
 import { useEffect, useState } from 'react'
 import { auth } from '../lib/firebase'
+import CreatePoll from './createPoll'
 
 export default function Header() {
     const [user, setUser] = useState(auth.currentUser)
@@ -21,9 +22,7 @@ export default function Header() {
         <header className='flex h-20 items-center justify-between bg-slate-800 px-6 text-slate-200'>
             <h1 className='text-3xl font-bold'>Poll App</h1>
             <div className='flex gap-4'>
-                <button className='rounded px-2 py-0.5 text-lg text-blue-500 duration-200 hover:bg-purple-200'>
-                    Create A Poll
-                </button>
+                <CreatePoll />
                 {!user ? (
                     <button
                         className='rounded border border-blue-500 px-2 py-0.5 duration-200 hover:bg-blue-500'

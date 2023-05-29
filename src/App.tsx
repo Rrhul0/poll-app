@@ -9,7 +9,6 @@ function App() {
             <div className='p-6'>
                 <Polls />
             </div>
-            <CreatePoll />
         </main>
     )
 }
