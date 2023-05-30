@@ -1,6 +1,6 @@
-import { onValue, ref, set } from 'firebase/database'
+import { child, get, onValue, ref, set } from 'firebase/database'
 import { useEffect, useState } from 'react'
-import { realtimeVotesDB } from '../lib/firebase'
+import { auth, realtimeVotesDB } from '../lib/firebase'
 import AddMoreOptions from './addMoreOptions'
 import { TypePoll } from './polls'
 
@@ -18,9 +18,27 @@ export default function Poll({ poll }: { poll: TypePoll }) {
         return () => unsub()
     }, [])
 
-    function onClickVote(optionVotes: number, optionIndex: number) {
-        const newRef = ref(realtimeVotesDB, 'poll-' + poll.id + '/' + optionIndex)
-        set(newRef, optionVotes + 1)
+    async function onClickVote(optionVotes: number, optionIndex: number) {
+        // const newRef = ref(realtimeVotesDB, 'poll-' + poll.id + '/' + optionIndex)
+        // set(newRef, optionVotes + 1)
+
+        //test
+        const user = auth.currentUser
+        if (!user) return
+
+        const testVoteIndexRef = ref(realtimeVotesDB, user.uid + '/' + poll.id)
+        let prevVoteOption: number = (await get(child(testVoteIndexRef, '/'))).val()
+        if (prevVoteOption) {
+            //decrease 1 vote from last option total vote count
+            const prevOptionVoteCount = ref(realtimeVotesDB, 'poll-' + poll.id + '/' + prevVoteOption)
+            set(prevOptionVoteCount, votes[prevVoteOption] - 1)
+        }
+
+        set(testVoteIndexRef, optionIndex) //replace the new vote option to user's vote
+
+        //inrease the new vote count by 1
+        const totalRef = ref(realtimeVotesDB, 'poll-' + poll.id + '/' + optionIndex)
+        set(totalRef, optionVotes + 1)
     }
 
     const totalVotes = votes.reduce((pv, cv) => pv + cv, 0) || 1
