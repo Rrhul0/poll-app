@@ -1,4 +1,5 @@
-import { type Unsubscribe, onValue, ref, set } from 'firebase/database'
+import { onAuthStateChanged } from 'firebase/auth'
+import { onValue, ref, set } from 'firebase/database'
 import { useEffect, useState } from 'react'
 import { auth, realtimeVotesDB } from '../lib/firebase'
 import AddMoreOptions from './addMoreOptions'
@@ -17,20 +18,25 @@ export default function Poll({ poll }: { poll: TypePoll }) {
             setVotes(snapshot.val())
         })
 
-        const user = auth.currentUser
-        let userVoteUnsub: Unsubscribe
-        if (user) {
-            const userVoteIndexRef = ref(realtimeVotesDB, user.uid + '/' + poll.id)
-            userVoteUnsub = onValue(userVoteIndexRef, snap => setUserVote(snap.val()))
-        }
-
         return () => {
             unsub()
-            userVoteUnsub()
         }
     }, [])
 
-    console.log(userVote)
+    useEffect(() => {
+        const unsub = onAuthStateChanged(auth, () => {
+            const user = auth.currentUser
+            if (!user) {
+                setUserVote(null)
+                return
+            }
+            const userVoteIndexRef = ref(realtimeVotesDB, user.uid + '/' + poll.id)
+            const userVoteUnsub = onValue(userVoteIndexRef, snap => setUserVote(snap.val()))
+
+            return () => userVoteUnsub()
+        })
+        return () => unsub()
+    }, [])
 
     async function onClickVote(optionVotes: number, optionIndex: number) {
         const user = auth.currentUser

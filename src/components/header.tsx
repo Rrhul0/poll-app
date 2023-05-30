@@ -16,7 +16,7 @@ export default function Header() {
     useEffect(() => {
         const unsub = onAuthStateChanged(auth, () => setUser(auth.currentUser))
         return () => unsub()
-    })
+    }, [])
 
     return (
         <header className='flex h-20 items-center justify-between bg-slate-800 px-6 text-slate-200'>
