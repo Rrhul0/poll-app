@@ -1,4 +1,4 @@
-import { child, get, onValue, ref, set } from 'firebase/database'
+import { type Unsubscribe, onValue, ref, set } from 'firebase/database'
 import { useEffect, useState } from 'react'
 import { auth, realtimeVotesDB } from '../lib/firebase'
 import AddMoreOptions from './addMoreOptions'
@@ -6,35 +6,48 @@ import { TypePoll } from './polls'
 
 export default function Poll({ poll }: { poll: TypePoll }) {
     const [votes, setVotes] = useState<number[]>([])
+    const [userVote, setUserVote] = useState<number | null>(null) //user vote index to this poll
 
-    const refDB = ref(realtimeVotesDB, 'poll-' + poll.id)
+    const totalVotesRef = ref(realtimeVotesDB, 'poll-' + poll.id)
 
     useEffect(() => {
-        const unsub = onValue(refDB, snapshot => {
+        const unsub = onValue(totalVotesRef, snapshot => {
             const val = snapshot.val()
             if (!val) return
             setVotes(snapshot.val())
         })
-        return () => unsub()
+
+        const user = auth.currentUser
+        let userVoteUnsub: Unsubscribe
+        if (user) {
+            const userVoteIndexRef = ref(realtimeVotesDB, user.uid + '/' + poll.id)
+            userVoteUnsub = onValue(userVoteIndexRef, snap => setUserVote(snap.val()))
+        }
+
+        return () => {
+            unsub()
+            userVoteUnsub()
+        }
     }, [])
 
-    async function onClickVote(optionVotes: number, optionIndex: number) {
-        // const newRef = ref(realtimeVotesDB, 'poll-' + poll.id + '/' + optionIndex)
-        // set(newRef, optionVotes + 1)
+    console.log(userVote)
 
-        //test
+    async function onClickVote(optionVotes: number, optionIndex: number) {
         const user = auth.currentUser
         if (!user) return
 
-        const testVoteIndexRef = ref(realtimeVotesDB, user.uid + '/' + poll.id)
-        let prevVoteOption: number = (await get(child(testVoteIndexRef, '/'))).val()
+        const prevVoteOption = userVote
+        if (prevVoteOption === optionIndex) return //clicking the already voted option
+
         if (prevVoteOption) {
             //decrease 1 vote from last option total vote count
             const prevOptionVoteCount = ref(realtimeVotesDB, 'poll-' + poll.id + '/' + prevVoteOption)
             set(prevOptionVoteCount, votes[prevVoteOption] - 1)
         }
 
-        set(testVoteIndexRef, optionIndex) //replace the new vote option to user's vote
+        //replace the new vote option to user's vote
+        const userVoteRef = ref(realtimeVotesDB, user.uid + '/' + poll.id)
+        set(userVoteRef, optionIndex)
 
         //inrease the new vote count by 1
         const totalRef = ref(realtimeVotesDB, 'poll-' + poll.id + '/' + optionIndex)
@@ -56,7 +69,9 @@ export default function Poll({ poll }: { poll: TypePoll }) {
                     return (
                         <button
                             key={index}
-                            className='relative flex aspect-square w-40 flex-col items-center gap-2 overflow-hidden rounded-lg border px-2 py-3'
+                            className={`relative flex aspect-square w-40 flex-col items-center gap-2 overflow-hidden rounded-lg border px-2 py-3 ${
+                                index === userVote ? 'border-red-400' : ''
+                            }`}
                             onClick={() => onClickVote(optionVotes, index)}
                         >
                             <div
