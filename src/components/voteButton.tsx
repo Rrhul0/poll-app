@@ -1,6 +1,7 @@
 import { ref, set } from 'firebase/database'
 import { toast } from 'react-toastify'
 import { auth, realtimeVotesDB } from '../lib/firebase'
+import ToastNotLoggedIn from './toastNotLoggedIn'
 
 interface props {
     pollId: string
@@ -19,7 +20,7 @@ export default function VoteButton({ pollId, option, index, votes, userVote }: p
     async function onClickVote(optionVotes: number, optionIndex: number) {
         const user = auth.currentUser
         if (!user) {
-            toast('Not Logged In! Please login first')
+            toast(<ToastNotLoggedIn />)
             return
         }
 

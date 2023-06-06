@@ -1,18 +1,13 @@
-import { GoogleAuthProvider, onAuthStateChanged, signInWithPopup, signOut } from 'firebase/auth'
+import { onAuthStateChanged, signOut } from 'firebase/auth'
 import { useEffect, useState } from 'react'
 import { auth } from '../lib/firebase'
 import CreatePoll from './createPoll'
+import SignInButton from './signInButton'
 
 export default function Header() {
     const [user, setUser] = useState(auth.currentUser)
     const [showMenu, setShowMenu] = useState(false)
 
-    function onClickSignIn() {
-        const provider = new GoogleAuthProvider()
-        provider.addScope('profile')
-        provider.addScope('email')
-        signInWithPopup(auth, provider)
-    }
     useEffect(() => {
         const unsub = onAuthStateChanged(auth, () => setUser(auth.currentUser))
         return () => unsub()
@@ -24,12 +19,7 @@ export default function Header() {
             <div className='flex gap-4'>
                 <CreatePoll />
                 {!user ? (
-                    <button
-                        className='rounded border border-blue-500 px-2 py-0.5 duration-200 hover:bg-blue-500'
-                        onClick={onClickSignIn}
-                    >
-                        Sign In
-                    </button>
+                    <SignInButton />
                 ) : (
                     <button
                         onClick={() => setShowMenu(o => !o)}

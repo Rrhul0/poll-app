@@ -10,7 +10,7 @@ function App() {
             <div className='p-6'>
                 <Polls />
             </div>
-            <ToastContainer />
+            <ToastContainer position='bottom-center' />
         </main>
     )
 }

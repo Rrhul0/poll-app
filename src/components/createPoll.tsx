@@ -2,6 +2,7 @@ import { addDoc, serverTimestamp } from 'firebase/firestore'
 import { FormEvent, useState } from 'react'
 import { auth, pollsDB } from '../lib/firebase'
 import { toast } from 'react-toastify'
+import ToastNotLoggedIn from './toastNotLoggedIn'
 
 export default function CreatePoll() {
     const [options, setOptions] = useState<number>(2)
@@ -11,7 +12,7 @@ export default function CreatePoll() {
         e.preventDefault()
 
         if (!auth.currentUser) {
-            toast('Not Logged In! Please login first')
+            toast(<ToastNotLoggedIn />)
             return
         }
 
