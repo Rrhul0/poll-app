@@ -1,8 +1,9 @@
 import { addDoc, serverTimestamp } from 'firebase/firestore'
 import { FormEvent, useState } from 'react'
-import { auth, pollsDB } from '../lib/firebase'
+import { auth, pollsDB, realtimeVotesDB } from '../lib/firebase'
 import { toast } from 'react-toastify'
 import ToastNotLoggedIn from './toastNotLoggedIn'
+import { ref, set } from 'firebase/database'
 
 export default function CreatePoll() {
     const [options, setOptions] = useState<number>(2)
@@ -29,7 +30,11 @@ export default function CreatePoll() {
             timestamp: serverTimestamp(),
         }
 
-        addDoc(pollsDB, data).then(() => toast(`${name} Poll added`))
+        addDoc(pollsDB, data).then(e => {
+            toast(`${name} Poll added`)
+            const totalRef = ref(realtimeVotesDB, 'poll-' + e.id)
+            set(totalRef, Array(optionsData.length).fill(0))
+        })
     }
 
     return (
