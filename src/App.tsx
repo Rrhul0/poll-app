@@ -1,6 +1,7 @@
-import CreatePoll from './components/createPoll'
+import { ToastContainer } from 'react-toastify'
 import Header from './components/header'
 import Polls from './components/polls'
+import 'react-toastify/dist/ReactToastify.min.css'
 
 function App() {
     return (
@@ -9,6 +10,7 @@ function App() {
             <div className='p-6'>
                 <Polls />
             </div>
+            <ToastContainer />
         </main>
     )
 }

@@ -1,4 +1,5 @@
 import { ref, set } from 'firebase/database'
+import { toast } from 'react-toastify'
 import { auth, realtimeVotesDB } from '../lib/firebase'
 
 interface props {
@@ -17,7 +18,10 @@ export default function VoteButton({ pollId, option, index, votes, userVote }: p
 
     async function onClickVote(optionVotes: number, optionIndex: number) {
         const user = auth.currentUser
-        if (!user) return
+        if (!user) {
+            toast('Not Logged In! Please login first')
+            return
+        }
 
         const prevVoteOption = userVote
         if (prevVoteOption === optionIndex) return //clicking the already voted option

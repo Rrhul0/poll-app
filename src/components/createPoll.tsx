@@ -1,6 +1,7 @@
-import { addDoc, serverTimestamp, documentId } from 'firebase/firestore'
+import { addDoc, serverTimestamp } from 'firebase/firestore'
 import { FormEvent, useState } from 'react'
-import { pollsDB } from '../lib/firebase'
+import { auth, pollsDB } from '../lib/firebase'
+import { toast } from 'react-toastify'
 
 export default function CreatePoll() {
     const [options, setOptions] = useState<number>(2)
@@ -8,18 +9,26 @@ export default function CreatePoll() {
 
     function onSubmitForm(e: FormEvent<HTMLFormElement>) {
         e.preventDefault()
+
+        if (!auth.currentUser) {
+            toast('Not Logged In! Please login first')
+            return
+        }
+
         const formData = new FormData(e.currentTarget)
         let optionsData = []
         for (let index = 0; index < options; index++) {
             optionsData.push(formData.get('option' + index))
         }
+        const name = formData.get('poll_name')
         const data = {
-            name: formData.get('poll_name'),
+            name,
             desc: formData.get('poll_desc'),
             options: optionsData,
             timestamp: serverTimestamp(),
         }
-        addDoc(pollsDB, data)
+
+        addDoc(pollsDB, data).then(() => toast(`${name} Poll added`))
     }
 
     return (
