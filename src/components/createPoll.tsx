@@ -17,14 +17,30 @@ export default function CreatePoll({ setOpen }: { setOpen: React.Dispatch<React.
         }
 
         const formData = new FormData(e.currentTarget)
+        const name = formData.get('poll_name')
+        const desc = formData.get('poll_desc')
+
+        if (!name) {
+            toast('Poll Name not Found!')
+            return
+        }
+        if (!desc) {
+            toast('Poll Description not Found!')
+            return
+        }
         let optionsData = []
         for (let index = 0; index < options; index++) {
+            const val = formData.get('option' + index)
+            if (!val) {
+                toast('Option values are not filled!')
+                return
+            }
             optionsData.push(formData.get('option' + index))
         }
-        const name = formData.get('poll_name')
+
         const data = {
             name,
-            desc: formData.get('poll_desc'),
+            desc,
             options: optionsData,
             timestamp: serverTimestamp(),
         }
