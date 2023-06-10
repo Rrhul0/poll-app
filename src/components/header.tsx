@@ -1,8 +1,8 @@
 import { onAuthStateChanged, signOut } from 'firebase/auth'
 import { useEffect, useState } from 'react'
 import { auth } from '../lib/firebase'
-import CreatePoll from './createPoll'
 import SignInButton from './signInButton'
+import CreatePollDialog from './createPollDialog'
 
 export default function Header() {
     const [user, setUser] = useState(auth.currentUser)
@@ -17,7 +17,7 @@ export default function Header() {
         <header className='flex h-20 items-center justify-between bg-slate-800 px-6 text-slate-200'>
             <h1 className='text-3xl font-bold'>Poll App</h1>
             <div className='flex gap-4'>
-                <CreatePoll />
+                <CreatePollDialog />
                 {!user ? (
                     <SignInButton />
                 ) : (
